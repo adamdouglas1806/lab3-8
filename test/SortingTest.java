@@ -74,13 +74,30 @@ public class SortingTest {
 		
 		LinkedList<Integer> sortSequential = SequentialMergeSort.mergeSort(list);
 		LinkedList<Integer> sortParallel = ParallelMergeSort.parallelMergeSort(list, 2);
+		
+		/* check that sequential merge sort has worked */
+		assertTrue(SortingCommon.isSorted(SequentialMergeSort.mergeSort(list)));
+		
+		/* now compare the parallel implementation with the sequential result */
+		assertEquals(sortSequential, sortParallel);
+	}
+	
+	/**
+	 * Ensures that sequential merge sort results match the thresholded parallel merge sort
+	 * results with a random generated list of integers. This is assuming the
+	 * sequential merge sort as the ground truth.
+	 */
+	@Test
+	public void parallelMergeSortThresholdTest() {
+		LinkedList<Integer> list = SortingCommon.randomList(1000);
+		
+		LinkedList<Integer> sortSequential = SequentialMergeSort.mergeSort(list);
 		LinkedList<Integer> sortParallelThresh = ParallelMergeSortThreshold.parallelMergeSortThreshold(list, 10, 2);
 
 		/* check that sequential merge sort has worked */
 		assertTrue(SortingCommon.isSorted(SequentialMergeSort.mergeSort(list)));
 		
-		/* now compare the two parallel implementations with the sequential result */
-		assertEquals(sortSequential, sortParallel);
+		/* now compare the thresholded parallel implementation with the sequential result */
 		assertEquals(sortSequential, sortParallelThresh);
 	}
 }
