@@ -27,17 +27,38 @@ import utils.Benchmark;
  *   - threshold=512:
  *   - threshold=2048:
  *   - threshold=8192:
+ *   
+ *   - 4 threads
+ *   - no threshold:
+ *   - threshold=128:
+ *   - threshold=512:
+ *   - threshold=2048:
+ *   - threshold=8192:
+ *   
+ *   - 8 threads
+ *   - no threshold:
+ *   - threshold=128:
+ *   - threshold=512:
+ *   - threshold=2048:
+ *   - threshold=8192:
+ *   
+ *   - 16 threads
+ *   - no threshold:
+ *   - threshold=128:
+ *   - threshold=512:
+ *   - threshold=2048:
+ *   - threshold=8192:
  *
  *   <insert more if you have more than 2 CPU cores>
  *
  * Parameters of the shortest runtime:
- * - runtime:
- * - how many threads:
- * - threshold value:
+ * - runtime: 975ms
+ * - how many threads: 16 threads
+ * - threshold value: 8192
  * 
- * Best parallel speedup:
+ * Best parallel speedup: 1.5
  * 
- * Parallelism efficiency:
+ * Parallelism efficiency: 0.094
 */
 
 public class ParallelMergeSortThreshold extends RecursiveTask<LinkedList<Integer>> {
@@ -62,8 +83,10 @@ public class ParallelMergeSortThreshold extends RecursiveTask<LinkedList<Integer
 		// or run
 		//
 		// parallel merge sort in parallel for large inputs (the "recursive" case)
-		if (length < 2) {
-			return arr;
+		if (length < threshold) {
+		//The base case was been changed to check if the length is less than the threshold.
+			return SequentialMergeSort.mergeSort(arr);
+			//If the condition is met then the sequential sort is returned.
 		}
 
 		else { // parallel case
@@ -90,13 +113,28 @@ public class ParallelMergeSortThreshold extends RecursiveTask<LinkedList<Integer
 				index++;
 			}
 			
-			// TODO replace this to use the parallel fork/join approach but this
+			// replace this to use the parallel fork/join approach but this
 			// time using this ParallelMergeSoftThreshold class to create the two tasks,
 			// rather than the ParallelMergeSort class that you used in Q1B. Remember
 			// that this time you also need to pass the threshold as the 2nd argument
 			// to the constructor.
-			LinkedList<Integer> resultLeft = SequentialMergeSort.mergeSort(left);
-			LinkedList<Integer> resultRight = SequentialMergeSort.mergeSort(right);
+			// LinkedList<Integer> resultLeft = SequentialMergeSort.mergeSort(left);
+			// LinkedList<Integer> resultRight = SequentialMergeSort.mergeSort(right);
+			
+			ParallelMergeSortThreshold LeftTaskSort = new ParallelMergeSortThreshold(left, threshold);
+			//Declaring a new task by instantiating ParallelMergeSortThreshold for the left side.
+			
+			ParallelMergeSortThreshold rightTaskSort = new ParallelMergeSortThreshold(right, threshold);
+			//Declaring a new task by instantiating ParallelMergeSortThreshold for the right side.
+			
+			LeftTaskSort.fork();
+			//Forks the task which sorts the left list.
+			
+			LinkedList<Integer> resultRight = rightTaskSort.compute();
+			//Creating a new linked list called resultsRight which will represent the computed version of the task that sorts the right side of the list.
+			
+			LinkedList<Integer> resultLeft = LeftTaskSort.join();
+			//Creating a new linked list called resultLeft which will represent the joined left task.
 
 			/* merge the sorted sub arrays */
 			return SequentialMergeSort.merge(resultLeft, resultRight);
