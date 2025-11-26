@@ -58,7 +58,7 @@ import utils.Benchmark;
  * 
  * Best parallel speedup: 1.5
  * 
- * Parallelism efficiency: 0.094
+ * Parallelism efficiency: 9.4%
 */
 
 public class ParallelMergeSortThreshold extends RecursiveTask<LinkedList<Integer>> {
