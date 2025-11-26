@@ -21,9 +21,12 @@ import utils.Benchmark;
  * - 16 threads: 1455ms
  * - <insert more lines as appropriate>
  * 
- * After parallelisation: TODO
- * - 1 thread: 
- * - 2 threads:
+ * After parallelisation:
+ * - 1 threads: 1490ms
+ * - 2 threads: 1107ms
+ * - 4 threads: 1044ms
+ * - 8 threads: 1029ms
+ * - 16 threads: 1009ms
  * - <insert more lines as appropriate>
  */
 
@@ -70,9 +73,24 @@ public class ParallelMergeSort extends RecursiveTask<LinkedList<Integer>> {
 			 * 
 			 * Q1B: replace this with a parallel fork/join approach.
 			 */
-			LinkedList<Integer> resultLeft = SequentialMergeSort.mergeSort(left);
-			LinkedList<Integer> resultRight = SequentialMergeSort.mergeSort(right);
+			//LinkedList<Integer> resultLeft = SequentialMergeSort.mergeSort(left);
+			//LinkedList<Integer> resultRight = SequentialMergeSort.mergeSort(right);
 
+			ParallelMergeSort LeftTaskSort = new ParallelMergeSort(left);
+			//Declaring a new task by instantiating ParallelMergeSort for the left side.
+			ParallelMergeSort rightTaskSort = new ParallelMergeSort(right);
+			//Declaring a new task by instantiating ParallelMergeSort for the right side.
+			
+			LeftTaskSort.fork();
+			//Forks the task which sorts the left list.
+			
+			LinkedList<Integer> resultRight = rightTaskSort.compute();
+			//Creating a new linked list called resultsRight which will represent the computed version of the task that sorts the right side of the list.
+			
+			LinkedList<Integer> resultLeft = LeftTaskSort.join();
+			//Creating a new linked list called resultLeft which will represent the joined left task.
+			
+			
 			/* merge the sorted sub arrays */
 			return merge(resultLeft, resultRight);
 		}
