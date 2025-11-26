@@ -13,9 +13,12 @@ import utils.Benchmark;
  * Merge Sort results
  * ~~~~~~~~~~~~~~~~~~
  * 
- * Before parallelisation: TODO
- * - 1 thread: 
- * - 2 threads:
+ * Before parallelisation:
+ * - 1 threads: 1554ms
+ * - 2 threads: 1490ms
+ * - 4 threads: 1458ms
+ * - 8 threads: 1453ms
+ * - 16 threads: 1455ms
  * - <insert more lines as appropriate>
  * 
  * After parallelisation: TODO
